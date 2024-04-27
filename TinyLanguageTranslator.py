@@ -25,6 +25,8 @@ setting_auto_save_log = True
 src_language = 'en'
 # language to translate
 dest_language = 'zh-Tw'
+# auto save log file name
+auto_log_file_name = "translated.txt"
 
 def check_help(command):
     if "-h" in command:
@@ -76,7 +78,8 @@ def correct_grammar_and_translate(sentence):
     return result
 
 def save_translate_result(text):
-    with open('translated.txt', 'a') as f:
+    global auto_log_file_name
+    with open(auto_log_file_name, 'a') as f:
         f.write(text + '\n')
 
 def command_reader(command):    
