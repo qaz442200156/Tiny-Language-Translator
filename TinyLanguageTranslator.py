@@ -68,7 +68,7 @@ def translate_world(world):
     print(result)
     return result
 
-def correct_grammar_and_translate(sentence):    
+def correct_grammar_and_translate(sentence,matches):    
     global src_language
     global dest_language
     corrected_text = language_tool_python.utils.correct(sentence,matches)
@@ -102,7 +102,7 @@ def command_reader(command):
         if len(matches) == 0:
             result = translate_world(command)
         else:
-            result = correct_grammar_and_translate(command)
+            result = correct_grammar_and_translate(command,matches)
     
     if len(result) > 0:
         save_translate_result(result)
