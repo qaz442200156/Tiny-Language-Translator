@@ -110,7 +110,7 @@ def command_reader(command):
 
 def main():
     while True:
-        command = input("Enter S(sentence) or W(world) to set translate mode (or 'e' to quit '-h' for help): ")
+        command = input("Enter S(sentence) or W(a word) to set translate mode (or 'e' to quit '-h' for help): ")
         if check_help(command):
             continue
         if check_setting(command):
