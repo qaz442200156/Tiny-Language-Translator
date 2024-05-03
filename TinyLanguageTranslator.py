@@ -58,7 +58,14 @@ def show_setting_state(command,force_show=False):
 def clean_console():
     os.system('cls' if os.name == 'nt' else 'clear')
 
+def is_quit(world):
+    if len(world) == 1 and world.isalpha() and world.lower().strip() in ['e','q']:
+        return True
+    return False
+
 def translate_world(world):
+    if is_quit(world):
+        return ""
     global src_language
     global dest_language
     translated = translator.translate(world, src=src_language, dest=dest_language)
@@ -66,7 +73,9 @@ def translate_world(world):
     print(result)
     return result
 
-def correct_grammar_and_translate(sentence,matches):    
+def correct_grammar_and_translate(sentence,matches):
+    if is_quit(sentence):
+        return ""
     global src_language
     global dest_language
     corrected_text = language_tool_python.utils.correct(sentence,matches)
@@ -83,20 +92,20 @@ def save_translate_result(text):
 def command_reader(command):    
     # clear old result
     result = ""
-    command_str = command.lower()
+    first_command = command.lower().strip()
 
     if len(command) == 0:
         return True
-    elif command_str == 'e':
+    elif first_command[0] in ['e','q']:
         return False
-    elif command_str == 'cls':
+    elif first_command == 'cls':
         clean_console()
         return True
-    elif command_str.strip()[0] == 'w':
-        command = input("Enter a world (or 'e' to quit): ")
+    elif first_command[0] == 'w':
+        command = input("Enter a world (or 'e'/'q' to quit): ")
         result = translate_world(command)
-    elif command_str.strip()[0] == 's':
-        command = input("Enter a sentence (or 'e' to quit): ")
+    elif first_command[0] == 's':
+        command = input("Enter a sentence (or 'e'/'q' to quit): ")
         matches = tool.check(command)
         if len(matches) == 0:
             result = translate_world(command)
@@ -109,7 +118,7 @@ def command_reader(command):
 
 def main():
     while True:
-        command = input("Enter S(sentence) or W(a word) to set translate mode (or 'e' to quit '-h' for help): ")
+        command = input("Enter S(sentence) or W(a word) to set translate mode (or 'e'/'q' to quit '-h' for help): ")
         if check_help(command):
             continue
         if check_setting(command):
