@@ -32,7 +32,7 @@ def check_help(command):
     if "-h" in command:
         print("-s to check on used settings")
         print("-AutoSave to Auto Save Log into text file")
-        print("Sample:-log -AutoSave")
+        print("Sample:-AutoSave")
         command = ""
         return True
     return False
@@ -49,10 +49,8 @@ def check_setting(command):
 def show_setting_state(command,force_show=False):
     global setting_auto_save_log
     if "-s" in command.lower() or force_show:
-        if setting_auto_save_log:
-            print("Auto Save Log Is On")
-        else:
-            print("Auto Save Log Is Off")
+        state = "On" if setting_auto_save_log else "Off"
+        print("Auto Save Log Is",state)
         return True
     return False
 
@@ -64,7 +62,7 @@ def translate_world(world):
     global src_language
     global dest_language
     translated = translator.translate(world, src=src_language, dest=dest_language)
-    result = f"{src_language}:"+world+f" -> {dest_language}:"+translated.text
+    result = f"{src_language}:{world} -> {dest_language}:{translated.text}"
     print(result)
     return result
 
@@ -73,30 +71,31 @@ def correct_grammar_and_translate(sentence,matches):
     global dest_language
     corrected_text = language_tool_python.utils.correct(sentence,matches)
     translated = translator.translate(sentence, src=src_language, dest=dest_language)
-    result = f"{src_language}:"+sentence+" #[Fix]:"+corrected_text+f" -> {dest_language}:"+translated.text
+    result = f"{src_language}:{sentence} #[Fix]:{corrected_text} -> {dest_language}:{translated.text}"
     print(result)
     return result
 
 def save_translate_result(text):
     global auto_log_file_name
-    with open(auto_log_file_name, 'a') as f:
+    with open(auto_log_file_name, 'a', encoding='utf-8') as f:
         f.write(text + '\n')
 
 def command_reader(command):    
     # clear old result
     result = ""
+    command_str = command.lower()
 
     if len(command) == 0:
         return True
-    elif command.lower() == 'e':
+    elif command_str == 'e':
         return False
-    elif command.lower() == 'cls':
+    elif command_str == 'cls':
         clean_console()
         return True
-    elif command.lower() == 'w':
+    elif command_str.strip()[0] == 'w':
         command = input("Enter a world (or 'e' to quit): ")
         result = translate_world(command)
-    elif command.lower() == 's':
+    elif command_str.strip()[0] == 's':
         command = input("Enter a sentence (or 'e' to quit): ")
         matches = tool.check(command)
         if len(matches) == 0:
